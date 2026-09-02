@@ -376,8 +376,11 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   .fecha--lead .fecha__img img{ aspect-ratio:16/10; }
 }
 @media (max-width: 560px){
-  .fgrid{ grid-template-columns:1fr; }
+  .fgrid{ grid-template-columns:1fr; gap:44px; }
   .fecha--lead .fecha__img img{ aspect-ratio:3/4; }
+  /* apiladas: la ficha va pegada a SU foto (sin la linea que la despegaba); la
+     separacion queda ENTRE tarjetas, para que cada foto se lea con su titulo */
+  .fecha__body{ border-top:0; padding-top:0; margin-top:14px; }
 }
 
 /* =========================================================
