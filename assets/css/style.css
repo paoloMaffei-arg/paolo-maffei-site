@@ -460,6 +460,7 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   /* en pantalla chica el set se desliza en horizontal */
   .vset{ grid-auto-columns:min(74%, 300px); }
   .v__info--set{ text-align:left; }
+  .v__info--set .v__note{ margin-inline:0; }
 }
 
 /* =========================================================
