@@ -132,6 +132,21 @@
     sections.forEach(function (s) { spy.observe(s); });
   }
 
+  /* ---------- al volver al inicio (hero visible): limpiar estado ----------
+     El hero no tiene link propio, asi que sin esto quedaria resaltada la ultima
+     seccion visitada y el CTA flotante colgado. Al ver el hero, se reinicia todo. */
+  var heroTop = document.getElementById('top');
+  if (heroTop && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove('is-active'); });
+      if (typeof pasoBio !== 'undefined') {
+        pasoBio = false;
+        if (typeof refrescarFab === 'function') refrescarFab();
+      }
+    }, { threshold: 0.55 }).observe(heroTop);
+  }
+
   /* ---------- reveal al entrar en pantalla ---------- */
   var reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
