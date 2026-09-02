@@ -157,8 +157,9 @@ html.intro-on .intro.is-leaving::before{ opacity:0; transition:opacity .8s var(-
 html.intro-on .intro.is-leaving::after{ opacity:0; transition:opacity .3s var(--ease); }
 html.intro-on .intro.is-leaving .intro__logo{
   animation:none;
-  /* arranca con impulso y desacelera al aterrizar en el nav */
-  transition:transform 1.05s cubic-bezier(.6,.01,.2,1);
+  /* viaja con impulso y desacelera al aterrizar; se funde al final con el del nav */
+  transition:transform 1.05s cubic-bezier(.6,.01,.2,1), opacity .35s var(--ease) .72s;
+  opacity:0;
 }
 
 /* con movimiento reducido, la entrada es directa (sin blur/scale ni linea
@@ -190,6 +191,10 @@ html.intro-on .intro.is-leaving .intro__logo{
 }
 .nav__mark{ display:inline-flex; align-items:center; padding-block:11px; }
 .nav__mark img{ height:26px; width:auto; display:block; }
+/* mientras corre la intro, el logo del nav se revela solo cuando el grande llega
+   (crossfade). Al quitarse intro-on vuelve a su opacidad normal (1). */
+html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
+@keyframes navReveal{ from{ opacity:0; } to{ opacity:1; } }
 @media (max-width: 980px){ .nav__mark img{ height:24px; } }
 .nav__links{ display:flex; align-items:center; gap:4px; }
 .nav__links a{
@@ -305,12 +310,17 @@ html.intro-on .intro.is-leaving .intro__logo{
 .genres li{
   display:grid; grid-template-columns:64px minmax(0,1fr) minmax(0,1.05fr);
   align-items:center; gap:20px;
-  padding:clamp(20px,2.6vw,32px) 0;
+  padding:clamp(20px,2.6vw,32px) clamp(14px,1.8vw,22px);
+  margin-inline:calc(-1 * clamp(14px,1.8vw,22px));   /* el fondo cubre hasta el borde sin desalinear el contenido */
   border-bottom:1px solid var(--line-soft);
-  transition:transform .45s var(--ease), background .45s var(--ease);
+  border-radius:var(--r-media);
+  transition:background .4s var(--ease);
 }
+.genres li > *{ transition:transform .45s var(--ease); }
 .genres li:last-child{ border-bottom:0; }
-.genres li:hover{ transform:translateX(16px); background:linear-gradient(90deg, rgba(255,59,47,.07), transparent 60%); }
+/* fondo rojo mas visible y cubriendo TODO el recuadro; solo el contenido avanza */
+.genres li:hover{ background:linear-gradient(90deg, rgba(255,59,47,.22), rgba(255,59,47,.06)); }
+.genres li:hover > *{ transform:translateX(12px); }
 .genres__n{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; color:var(--accent); }
 .genres__t{ font-size:clamp(26px,4.6vw,54px); line-height:1; font-weight:800; font-variation-settings:'wdth' 86; letter-spacing:-.028em; }
 .genres__d{ color:var(--muted); font-size:14.5px; line-height:1.6; }
@@ -466,6 +476,26 @@ html.intro-on .intro.is-leaving .intro__logo{
 .foot__in a:hover{ color:var(--fg); border-bottom-color:var(--accent); }
 
 /* =========================================================
+   CTA FLOTANTE  (acompaña el scroll)
+   ========================================================= */
+.fab{
+  position:fixed; z-index:90;
+  right:clamp(16px,3vw,32px); bottom:max(clamp(16px,3vw,32px), env(safe-area-inset-bottom));
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:15px 30px; border-radius:var(--r-pill);
+  background:var(--accent); color:var(--accent-ink);
+  font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  box-shadow:0 16px 32px -12px rgba(0,0,0,.7), 0 4px 12px rgba(0,0,0,.4);
+  opacity:0; transform:translateY(14px) scale(.96); pointer-events:none;
+  transition:opacity .4s var(--ease), transform .4s var(--ease),
+             background .3s var(--ease), color .3s var(--ease);
+}
+.fab.is-visible{ opacity:1; transform:none; pointer-events:auto; }
+.fab:hover{ background:#fff; color:#08080a; transform:translateY(-2px); }
+.fab:active{ transform:translateY(1px) scale(.98); }
+@media (max-width: 560px){ .fab{ padding:14px 26px; font-size:11px; } }
+
+/* =========================================================
    LIGHTBOX
    ========================================================= */
 .lb{
@@ -515,8 +545,10 @@ html.intro-on .intro.is-leaving .intro__logo{
   .reveal{ opacity:1; transform:none; transition:none; }
   .hero__img{ animation:none; }
   .lb__fig img{ animation:none; }
-  .btn, .fecha__img img, .gal__i > img, .genres li{ transition:none; }
+  .btn, .fecha__img img, .gal__i > img, .genres li > *{ transition:none; }
   .btn:hover, .btn:active{ transform:none; }
   .fecha:hover .fecha__img img, .gal__i:hover > img{ transform:none; }
-  .genres li:hover{ transform:none; }
+  .genres li:hover > *{ transform:none; }
+  .fab{ transition:opacity .3s var(--ease); }
+  .fab.is-visible{ transform:none; }
 }

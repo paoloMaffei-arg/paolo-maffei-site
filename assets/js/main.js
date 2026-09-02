@@ -17,6 +17,9 @@
     var intro = document.getElementById('intro');
     if (!intro) return;
 
+    /* El logo del nav arranca invisible (CSS) y se revela solo, sincronizado con
+       la llegada del logo grande: el crossfade lo maneja una animacion CSS, no el
+       JS, para que sin JS el logo del nav igual aparezca (fail-safe). */
     var cerrada = false;
     function irAlNav() {
       if (cerrada) return;
@@ -37,7 +40,7 @@
       setTimeout(function () {
         root.classList.remove('intro-on');
         if (intro.parentNode) intro.remove();
-      }, 1100);
+      }, 1150);
     }
 
     /* saltear si la persona interactúa */
@@ -81,6 +84,18 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && nav.classList.contains('is-open')) closeNav();
   });
+
+  /* ---------- CTA flotante: visible en todo el scroll, se esconde sobre #booking ---------- */
+  var fab = document.getElementById('fab');
+  var booking = document.getElementById('booking');
+  if (fab) {
+    fab.classList.add('is-visible');   // visible por defecto; el observer solo lo esconde en #booking
+    if (booking && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        fab.classList.toggle('is-visible', !entries[0].isIntersecting);
+      }, { rootMargin: '0px 0px -18% 0px' }).observe(booking);
+    }
+  }
 
   /* ---------- link activo según la sección visible ---------- */
   var links = Array.prototype.slice.call(navLinks.querySelectorAll('a[href^="#"]'));
