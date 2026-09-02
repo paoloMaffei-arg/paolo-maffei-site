@@ -221,17 +221,44 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   .nav__burger{ display:block; }
   .nav{ background:rgba(8,8,10,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
   .nav__links{
-    position:fixed; inset:62px 0 auto 0;
-    flex-direction:column; align-items:stretch; gap:0;
-    background:#08080a; border-bottom:1px solid var(--line);
-    box-shadow:0 24px 40px -18px rgba(0,0,0,.9);
-    padding:10px var(--pad) 26px;
-    transform:translateY(-12px); opacity:0; pointer-events:none;
-    transition:opacity .3s var(--ease), transform .3s var(--ease);
+    position:fixed; inset:0 0 auto 0;
+    flex-direction:column; align-items:stretch; gap:2px;
+    background:#08080a;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.95);
+    padding:80px var(--pad) 28px;
+    transform:translateY(-16px); opacity:0; pointer-events:none;
+    transition:opacity .35s var(--ease), transform .35s var(--ease);
   }
   .nav.is-open .nav__links{ opacity:1; transform:none; pointer-events:auto; }
-  .nav__links a{ padding:16px 0; font-size:13px; color:var(--fg); border-bottom:1px solid var(--line-soft); border-radius:0; }
-  .nav__cta{ margin:16px 0 0; border-radius:var(--r-pill); padding:16px !important; text-align:center; }
+
+  /* items de seccion: limpios, sin lineas, con el mismo hover que los generos */
+  .nav__links a:not(.nav__cta){
+    display:flex; align-items:center;
+    padding:15px 18px; margin:0;
+    font-family:var(--sans); font-size:19px; font-weight:600;
+    font-variation-settings:'wdth' 90; letter-spacing:-.01em; text-transform:none;
+    color:var(--fg); border-bottom:0; border-radius:var(--r-media);
+    overflow:hidden;
+    transition:background .4s var(--ease);
+  }
+  .nav__links a:not(.nav__cta) > span{ display:inline-block; transition:transform .4s var(--ease); }
+  .nav__links a:not(.nav__cta):hover,
+  .nav__links a:not(.nav__cta).is-active{
+    background:linear-gradient(90deg, rgba(255,59,47,.22), rgba(255,59,47,.06));
+  }
+  .nav__links a:not(.nav__cta):hover > span,
+  .nav__links a:not(.nav__cta).is-active > span{ transform:translateX(10px); }
+
+  /* boton contratar: pill solido, como el CTA principal */
+  .nav__cta{
+    margin-top:16px; padding:17px 24px !important; text-align:center; justify-content:center;
+    background:var(--accent); color:var(--accent-ink) !important;
+    border:0; border-radius:var(--r-pill);
+    font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    transition:background .3s var(--ease), color .3s var(--ease), transform .2s var(--ease);
+  }
+  .nav__cta:hover, .nav__cta:active{ background:#fff !important; color:#08080a !important; }
+  .nav__cta:active{ transform:scale(.98); }
 }
 
 /* =========================================================
@@ -549,6 +576,8 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   .btn:hover, .btn:active{ transform:none; }
   .fecha:hover .fecha__img img, .gal__i:hover > img{ transform:none; }
   .genres li:hover > *{ transform:none; }
+  .nav__links a:not(.nav__cta):hover > span,
+  .nav__links a:not(.nav__cta).is-active > span{ transform:none; }
   .fab{ transition:opacity .3s var(--ease); }
   .fab.is-visible{ transform:none; }
 }
