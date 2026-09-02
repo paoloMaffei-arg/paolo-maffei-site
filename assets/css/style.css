@@ -404,8 +404,8 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   margin:0;
   display:grid; grid-template-columns:minmax(0,400px) minmax(0,1fr);
   gap:clamp(24px,4vw,64px); align-items:center;
-  padding-block:clamp(30px,4vw,52px);
-  border-top:1px solid var(--line-soft);
+  padding-block:clamp(48px,7vw,88px);        /* aire generoso ENTRE eventos */
+  border-top:1px solid var(--line);          /* el separador va entre un evento y otro */
 }
 .v:first-child{ border-top:0; padding-top:0; }
 .v video{
@@ -449,7 +449,8 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   background:var(--bg-2); border-radius:var(--r-media); display:block;
   border:1px solid var(--line-soft);
 }
-.v__info--set{ margin-top:26px; padding-top:22px; border-top:1px solid var(--line-soft); }
+/* la ficha queda PEGADA a su propio carrusel (sin linea que la despegue) */
+.v__info--set{ margin-top:16px; }
 
 @media (max-width: 780px){
   .v{ grid-template-columns:1fr; gap:22px; }
