@@ -1,0 +1,7 @@
+# dependencias y config que no son parte del sitio
+node_modules/
+.vercel/
+package.json
+package-lock.json
+.DS_Store
+Thumbs.db
