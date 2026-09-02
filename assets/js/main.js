@@ -85,16 +85,33 @@
     if (e.key === 'Escape' && nav.classList.contains('is-open')) closeNav();
   });
 
-  /* ---------- CTA flotante: visible en todo el scroll, se esconde sobre #booking ---------- */
+  /* ---------- CTA flotante ----------
+     Arranca oculto (el hero y la bio ya tienen su propio "Contratar", seria
+     redundante). Aparece recien cuando el visitante paso la seccion bio, y se
+     esconde de nuevo sobre #booking (que tiene su CTA grande). */
   var fab = document.getElementById('fab');
+  var bio = document.getElementById('bio');
+  var sonido = document.getElementById('sonido');
   var booking = document.getElementById('booking');
-  if (fab) {
-    fab.classList.add('is-visible');   // visible por defecto; el observer solo lo esconde en #booking
-    if (booking && 'IntersectionObserver' in window) {
-      new IntersectionObserver(function (entries) {
-        fab.classList.toggle('is-visible', !entries[0].isIntersecting);
-      }, { rootMargin: '0px 0px -18% 0px' }).observe(booking);
+  if (fab && sonido && bio && 'IntersectionObserver' in window) {
+    var pasoBio = false, enBooking = false;
+    var refrescarFab = function () { fab.classList.toggle('is-visible', pasoBio && !enBooking); };
+    /* aparece cuando la seccion siguiente a la bio (sonido) ya entro bien en pantalla */
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { pasoBio = true; refrescarFab(); }
+    }, { rootMargin: '0px 0px -25% 0px', threshold: 0 }).observe(sonido);
+    /* se vuelve a esconder si el visitante sube y la bio reaparece */
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { pasoBio = false; refrescarFab(); }
+    }, { threshold: 0.35 }).observe(bio);
+    /* y no se muestra sobre el bloque de contacto, que ya tiene su CTA grande */
+    if (booking) {
+      new IntersectionObserver(function (es) {
+        enBooking = es[0].isIntersecting; refrescarFab();
+      }, { threshold: 0 }).observe(booking);
     }
+  } else if (fab) {
+    fab.classList.add('is-visible');
   }
 
   /* ---------- link activo según la sección visible ---------- */

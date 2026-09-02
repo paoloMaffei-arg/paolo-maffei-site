@@ -486,8 +486,8 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   background:var(--accent); color:var(--accent-ink);
   font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
   box-shadow:0 16px 32px -12px rgba(0,0,0,.7), 0 4px 12px rgba(0,0,0,.4);
-  opacity:0; transform:translateY(14px) scale(.96); pointer-events:none;
-  transition:opacity .4s var(--ease), transform .4s var(--ease),
+  opacity:0; transform:translateY(16px) scale(.94); pointer-events:none;
+  transition:opacity .55s var(--ease), transform .55s var(--ease),
              background .3s var(--ease), color .3s var(--ease);
 }
 .fab.is-visible{ opacity:1; transform:none; pointer-events:auto; }
