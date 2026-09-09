@@ -172,8 +172,10 @@
   var idx = 0;
   var lastFocus = null;
 
-  function render(i) {
-    idx = (i + items.length) % items.length;
+  var reduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  var swapping = false;
+
+  function paint() {
     var fig = items[idx];
     var img = fig.querySelector('img');
     var cap = fig.querySelector('figcaption');
@@ -182,22 +184,60 @@
     lbCap.textContent = cap ? cap.textContent : '';
   }
 
+  /* estado visual de la imagen (manejado por JS para materializar al abrir,
+     hacer crossfade al pasar de foto y salir por el mismo camino que entro).
+     Con movimiento reducido: solo opacidad, sin escala ni desenfoque. */
+  function imgHide(dur, blur, scale) {
+    lbImg.style.transition = 'opacity ' + dur + ' var(--ease), transform ' + dur + ' var(--ease), filter ' + dur + ' var(--ease)';
+    lbImg.style.opacity = '0';
+    lbImg.style.transform = reduce.matches ? 'none' : 'scale(' + scale + ')';
+    lbImg.style.filter = (reduce.matches || !blur) ? 'none' : 'blur(12px)';
+  }
+  function imgShow(dur) {
+    lbImg.style.transition = 'opacity ' + dur + ' var(--ease), transform ' + dur + ' var(--ease), filter ' + dur + ' var(--ease)';
+    lbImg.style.opacity = '1';
+    lbImg.style.transform = 'none';
+    lbImg.style.filter = 'blur(0)';
+  }
+
   function open(i) {
     lastFocus = document.activeElement;
-    render(i);
+    idx = (i + items.length) % items.length;
+    paint();
     lb.hidden = false;
     document.body.style.overflow = 'hidden';
-    void lb.offsetWidth; // fuerza reflow para que la transición arranque desde opacity:0
+    imgHide('0s', true, 0.965);   // punto de partida (materialize-start)
+    void lbImg.offsetWidth;       // fija ese estado antes de transicionar (reflow, no depende de rAF)
     lb.classList.add('is-on');
+    imgShow(reduce.matches ? '.2s' : '.45s');
     document.getElementById('lbX').focus();
   }
 
+  /* #1 pasar de foto: crossfade corto, sin desenfoque */
+  function go(delta) {
+    if (swapping) return;
+    var next = (idx + delta + items.length) % items.length;
+    if (next === idx) return;
+    idx = next;
+    if (reduce.matches) { paint(); return; }
+    swapping = true;
+    imgHide('.16s', false, 0.985);
+    setTimeout(function () {
+      var reveal = function () { void lbImg.offsetWidth; imgShow('.16s'); swapping = false; };
+      lbImg.onload = function () { lbImg.onload = null; reveal(); };
+      paint();
+      if (lbImg.complete) { lbImg.onload = null; reveal(); }   // ya estaba en cache
+    }, 160);
+  }
+
   function close() {
+    imgHide(reduce.matches ? '.2s' : '.25s', true, 0.965);   // #3 sale por el mismo camino que entro
     lb.classList.remove('is-on');
     document.body.style.overflow = '';
     setTimeout(function () {
       lb.hidden = true;
       lbImg.removeAttribute('src');
+      lbImg.style.cssText = '';   // limpia estilos inline para la proxima apertura
       if (lastFocus) lastFocus.focus();
     }, 300);
   }
@@ -212,15 +252,15 @@
   });
 
   document.getElementById('lbX').addEventListener('click', close);
-  document.getElementById('lbP').addEventListener('click', function () { render(idx - 1); });
-  document.getElementById('lbN').addEventListener('click', function () { render(idx + 1); });
+  document.getElementById('lbP').addEventListener('click', function () { go(-1); });
+  document.getElementById('lbN').addEventListener('click', function () { go(1); });
   lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
 
   document.addEventListener('keydown', function (e) {
     if (lb.hidden) return;
     if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') render(idx - 1);
-    if (e.key === 'ArrowRight') render(idx + 1);
+    if (e.key === 'ArrowLeft') go(-1);
+    if (e.key === 'ArrowRight') go(1);
   });
 
   /* swipe en mobile */
@@ -229,7 +269,7 @@
   lb.addEventListener('touchend', function (e) {
     if (x0 === null) return;
     var dx = e.changedTouches[0].clientX - x0;
-    if (Math.abs(dx) > 55) render(dx < 0 ? idx + 1 : idx - 1);
+    if (Math.abs(dx) > 55) go(dx < 0 ? 1 : -1);
     x0 = null;
   }, { passive: true });
 

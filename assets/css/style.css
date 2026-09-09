@@ -555,23 +555,23 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
 .lb__fig img{
   max-width:100%; max-height:82dvh; width:auto; height:auto;
   object-fit:contain; border-radius:var(--r-media);
-  animation:lbIn .45s var(--ease) both;
+  will-change:opacity, transform, filter;   /* la entrada/crossfade/salida las maneja main.js */
 }
-/* materializar: el desenfoque y la escala llegan juntos (la foto "aparece" como material) */
-@keyframes lbIn{ from{ opacity:0; transform:scale(.965); filter:blur(12px); } to{ opacity:1; transform:none; filter:blur(0); } }
 .lb__fig figcaption{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
 .lb__x{
   position:absolute; top:clamp(14px,3vw,28px); right:clamp(14px,3vw,28px);
   width:46px; height:46px; border-radius:var(--r-pill); font-size:16px;
-  border:1px solid var(--line); transition:background .3s var(--ease), border-color .3s var(--ease);
+  border:1px solid var(--line); transition:background .3s var(--ease), border-color .3s var(--ease), transform .12s var(--ease);
 }
 .lb__x:hover{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.lb__x:active{ transform:scale(.92); }   /* feedback al presionar */
 .lb__nav{
   position:absolute; top:50%; translate:0 -50%;
   width:52px; height:52px; border-radius:var(--r-pill); font-size:30px; line-height:0;
-  border:1px solid var(--line); transition:background .3s var(--ease), border-color .3s var(--ease);
+  border:1px solid var(--line); transition:background .3s var(--ease), border-color .3s var(--ease), transform .12s var(--ease);
 }
 .lb__nav:hover{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.lb__nav:active{ transform:scale(.92); }   /* feedback al presionar (independiente del translate de centrado) */
 .lb__nav--p{ left:clamp(10px,2.4vw,28px); }
 .lb__nav--n{ right:clamp(10px,2.4vw,28px); }
 @media (max-width: 560px){ .lb__nav{ display:none; } }
@@ -589,9 +589,9 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   html{ scroll-behavior:auto; }
   .reveal{ opacity:1; transform:none; transition:none; }
   .hero__img{ animation:none; }
-  .lb__fig img{ animation:none; filter:none; }
   .gal__i{ transition:none; }
   .gal__i:active{ transform:none; }
+  .lb__x:active, .lb__nav:active{ transform:none; }
   .btn, .fecha__img img, .gal__i > img, .genres li > *{ transition:none; }
   .btn:hover, .btn:active{ transform:none; }
   .fecha:hover .fecha__img img, .gal__i:hover > img{ transform:none; }
