@@ -78,8 +78,13 @@
     var open = nav.classList.toggle('is-open');
     burger.setAttribute('aria-expanded', String(open));
   });
+  /* los links llevan un <span> adentro: sin closest(), tocar el texto no cerraba el menu */
   navLinks.addEventListener('click', function (e) {
-    if (e.target.tagName === 'A') closeNav();
+    if (e.target.closest('a')) closeNav();
+  });
+  /* tocar el fondo atenuado tambien cierra */
+  nav.addEventListener('click', function (e) {
+    if (e.target === nav && nav.classList.contains('is-open')) closeNav();
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && nav.classList.contains('is-open')) closeNav();

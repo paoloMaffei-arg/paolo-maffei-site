@@ -189,6 +189,10 @@ html.intro-on .intro.is-leaving .intro__logo{
   .nav.is-stuck{ background:#08080a; backdrop-filter:none; -webkit-backdrop-filter:none; }
   .lb{ background:rgba(6,6,8,.99); backdrop-filter:none; -webkit-backdrop-filter:none; }
 }
+/* el panel del menu mobile deja de ser vidrio (solo donde ese panel existe) */
+@media (prefers-reduced-transparency: reduce) and (max-width: 980px){
+  .nav__links{ background:#0e0e11; backdrop-filter:none; -webkit-backdrop-filter:none; }
+}
 /* alto contraste: fondo casi solido y borde definido */
 @media (prefers-contrast: more){
   .nav.is-stuck{ background:#050506; border-bottom-color:var(--fg); }
@@ -229,21 +233,46 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
 @media (max-width: 980px){
   .nav__burger{ display:block; }
   /* el fondo NO va fijo: en el tope la barra es transparente (igual que en desktop)
-     y el vidrio aparece al scrollear (.is-stuck) o con el menu abierto. */
-  .nav.is-open{
-    background:rgba(8,8,10,.86);
-    backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3);
+     y el vidrio aparece al scrollear (.is-stuck). Con el menu abierto el vidrio lo
+     aporta el PANEL, que se extiende por detras de la barra: no se apilan dos vidrios. */
+
+  /* Con el menu abierto la barra suelta su propio vidrio: el panel ya cubre esa zona.
+     Ademas es necesario: un backdrop-filter en .nav haria que los hijos position:fixed
+     (el panel y el atenuado) se midan contra la barra en vez de contra la pantalla. */
+  .nav.is-open.is-stuck{
+    background:transparent;
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+    border-bottom-color:transparent;
   }
+
+  /* atenuado del fondo: el panel flota sobre la pagina en vez de taparla */
+  .nav::after{
+    content:''; position:fixed; inset:0; z-index:-1;
+    background:rgba(6,6,8,.55);
+    opacity:0; pointer-events:none;
+    transition:opacity .4s var(--ease);
+  }
+  .nav.is-open::after{ opacity:1; pointer-events:auto; }
+
   .nav__links{
     position:fixed; inset:0 0 auto 0;
-    flex-direction:column; align-items:stretch; gap:2px;
-    background:#08080a;
-    box-shadow:0 30px 60px -20px rgba(0,0,0,.95);
-    padding:80px var(--pad) 28px;
-    transform:translateY(-16px); opacity:0; pointer-events:none;
-    transition:opacity .35s var(--ease), transform .35s var(--ease);
+    flex-direction:column; align-items:stretch; gap:4px;
+    background:rgba(14,14,17,.72);
+    backdrop-filter:blur(30px) saturate(1.5);
+    -webkit-backdrop-filter:blur(30px) saturate(1.5);
+    border-bottom:1px solid rgba(244,241,236,.1);   /* filo de luz del material */
+    border-radius:0 0 26px 26px;
+    box-shadow:0 34px 70px -24px rgba(0,0,0,.9);
+    padding:84px var(--pad) 26px;
+    transform-origin:50% 0;
+    transform:translateY(-14px) scale(.985); opacity:0; pointer-events:none;
+    transition:opacity .26s var(--ease), transform .26s var(--ease);   /* salida: mas corta */
   }
-  .nav.is-open .nav__links{ opacity:1; transform:none; pointer-events:auto; }
+  .nav.is-open .nav__links{
+    opacity:1; transform:none; pointer-events:auto;
+    transition:opacity .42s var(--ease), transform .42s var(--ease);   /* entrada: mas amplia */
+  }
+  @supports not (backdrop-filter: blur(1px)){ .nav__links{ background:#0e0e11; } }
 
   /* items de seccion: limpios, sin lineas, con el mismo hover que los generos */
   .nav__links a:not(.nav__cta){
@@ -251,10 +280,20 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
     padding:15px 18px; margin:0;
     font-family:var(--sans); font-size:19px; font-weight:600;
     font-variation-settings:'wdth' 90; letter-spacing:-.01em; text-transform:none;
-    color:var(--fg); border-bottom:0; border-radius:var(--r-media);
+    color:var(--fg); border-bottom:0; border-radius:var(--r-pill);
     overflow:hidden;
-    transition:background .4s var(--ease);
+    opacity:0; transform:translateY(-8px);
+    transition:background .4s var(--ease), opacity .34s var(--ease), transform .34s var(--ease);
   }
+  .nav.is-open .nav__links a:not(.nav__cta){ opacity:1; transform:none; }
+  /* los items entran escalonados (solo al abrir; al cerrar se van juntos y rapido) */
+  .nav.is-open .nav__links > a:nth-child(1){ transition-delay:.05s; }
+  .nav.is-open .nav__links > a:nth-child(2){ transition-delay:.09s; }
+  .nav.is-open .nav__links > a:nth-child(3){ transition-delay:.13s; }
+  .nav.is-open .nav__links > a:nth-child(4){ transition-delay:.17s; }
+  .nav.is-open .nav__links > a:nth-child(5){ transition-delay:.21s; }
+  .nav.is-open .nav__links > a:nth-child(6){ transition-delay:.25s; }
+  .nav.is-open .nav__links > a:nth-child(7){ transition-delay:.29s; }
   .nav__links a:not(.nav__cta) > span{ display:inline-block; transition:transform .4s var(--ease); }
   .nav__links a:not(.nav__cta):hover,
   .nav__links a:not(.nav__cta).is-active{
@@ -269,8 +308,10 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
     background:var(--accent); color:var(--accent-ink) !important;
     border:0; border-radius:var(--r-pill);
     font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-    transition:background .3s var(--ease), color .3s var(--ease), transform .2s var(--ease);
+    opacity:0;   /* entra solo con opacidad: el transform queda libre para el :active */
+    transition:background .3s var(--ease), color .3s var(--ease), transform .2s var(--ease), opacity .34s var(--ease);
   }
+  .nav.is-open .nav__cta{ opacity:1; }
   .nav__cta:hover, .nav__cta:active{ background:#fff !important; color:#08080a !important; }
   .nav__cta:active{ transform:scale(.98); }
 }
@@ -603,6 +644,10 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
   .genres li:hover > *{ transform:none; }
   .nav__links a:not(.nav__cta):hover > span,
   .nav__links a:not(.nav__cta).is-active > span{ transform:none; }
+  /* menu mobile: entra y sale solo con opacidad, sin desplazamiento ni escalonado */
+  .nav__links{ transform:none !important; }
+  .nav__links a:not(.nav__cta){ transform:none !important; }
+  .nav.is-open .nav__links > a{ transition-delay:0s !important; }
   .fab{ transition:opacity .3s var(--ease); }
   .fab.is-visible{ transform:none; }
 }
