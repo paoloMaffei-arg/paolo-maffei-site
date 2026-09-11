@@ -14,8 +14,14 @@ paolo-maffei-site/
 └── README.md
 ```
 
-Peso: ~1,5 MB en la primera carga. Los videos solo se descargan si alguien
-aprieta play. Las fotos originales pesaban 552 MB.
+Peso: ~1,5 MB en la primera carga. Las fotos originales pesaban 552 MB.
+
+Los videos se descargan recién cuando uno entra en pantalla: al scrollear,
+el que se está viendo arranca solo y **en silencio** (en un carrusel, el
+primero). Siempre corre uno solo a la vez y se pausa al salir de pantalla.
+Si alguien lo pausa a mano, no se lo vuelve a poner. Esa lógica está al
+final de `assets/js/main.js`; para volver al comportamiento anterior (que
+no arranque nada solo), borrá ese bloque del IntersectionObserver.
 
 Las tipografías están hosteadas en la propia carpeta, así que la página no le
 pide nada a Google. Los únicos pedidos externos son los reproductores de

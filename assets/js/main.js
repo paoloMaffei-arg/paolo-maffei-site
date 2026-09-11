@@ -278,11 +278,55 @@
     x0 = null;
   }, { passive: true });
 
-  /* un solo video reproduciéndose a la vez */
-  var vids = document.querySelectorAll('.vgrid video');
-  Array.prototype.forEach.call(vids, function (v) {
+  /* ---------- videos ----------
+     1) Un solo video corriendo a la vez.
+     2) El que entra en pantalla arranca SOLO y EN SILENCIO. En un carrusel el
+        primero es el que se ve al entrar, asi que es el que arranca; si la
+        persona desliza el carrusel, sigue el que quede a la vista.
+     Todo con IntersectionObserver (sin listeners de scroll). */
+  var vids = Array.prototype.slice.call(document.querySelectorAll('.vgrid video'));
+
+  /* si alguien le da play a mano, los demas se pausan */
+  vids.forEach(function (v) {
     v.addEventListener('play', function () {
-      Array.prototype.forEach.call(vids, function (o) { if (o !== v) o.pause(); });
+      vids.forEach(function (o) { if (o !== v) o.pause(); });
     });
   });
+
+  if (vids.length && 'IntersectionObserver' in window) {
+    var ratios   = vids.map(function () { return 0; });
+    var arrancado = vids.map(function () { return false; });
+
+    var revisar = function () {
+      /* el que se fue de pantalla se pausa y queda listo para arrancar de nuevo
+         si se vuelve a el (el 0.25 evita que titile en el borde) */
+      vids.forEach(function (v, i) {
+        if (ratios[i] < 0.25) {
+          if (!v.paused) v.pause();
+          arrancado[i] = false;
+        }
+      });
+      /* arranca el mas visible, siempre que se vea al menos la mitad */
+      var mejor = -1, mejorRatio = 0.5;
+      ratios.forEach(function (r, i) { if (r > mejorRatio) { mejorRatio = r; mejor = i; } });
+      if (mejor > -1 && !arrancado[mejor]) {
+        arrancado[mejor] = true;          /* una sola vez por entrada: si la persona
+                                             lo pausa, no se lo volvemos a poner */
+        var v = vids[mejor];
+        v.muted = true;                   /* los navegadores solo dejan autoplay en silencio */
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});   /* si lo bloquean, queda el poster */
+      }
+    };
+
+    var vio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var i = vids.indexOf(en.target);
+        if (i > -1) ratios[i] = en.isIntersecting ? en.intersectionRatio : 0;
+      });
+      revisar();
+    }, { threshold: [0, .25, .5, .75, 1] });
+
+    vids.forEach(function (v) { vio.observe(v); });
+  }
 })();
