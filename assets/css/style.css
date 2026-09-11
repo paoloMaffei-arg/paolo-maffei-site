@@ -228,7 +228,12 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
 
 @media (max-width: 980px){
   .nav__burger{ display:block; }
-  .nav{ background:rgba(8,8,10,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+  /* el fondo NO va fijo: en el tope la barra es transparente (igual que en desktop)
+     y el vidrio aparece al scrollear (.is-stuck) o con el menu abierto. */
+  .nav.is-open{
+    background:rgba(8,8,10,.86);
+    backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  }
   .nav__links{
     position:fixed; inset:0 0 auto 0;
     flex-direction:column; align-items:stretch; gap:2px;
