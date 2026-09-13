@@ -278,6 +278,52 @@
     x0 = null;
   }, { passive: true });
 
+  /* ---------- mail ----------
+     Un link mailto solo abre algo si la computadora tiene un programa de correo
+     configurado. En muchas PC (Gmail desde el navegador) no pasa nada al tocarlo,
+     y parece que el boton esta roto. Asi que ademas copiamos la direccion y
+     SIEMPRE mostramos un aviso, copie o no: nunca queda sin respuesta.
+     El mailto sigue funcionando donde si hay un cliente de correo. */
+  var mail = document.querySelector('a[href^="mailto:"]');
+  var avisoMail = document.getElementById('mailCopied');
+  if (mail && avisoMail) {
+    /* respaldo para navegadores viejos o sin permiso de portapapeles */
+    var copiarViejo = function (txt) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = txt;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) { return false; }
+    };
+
+    var ocultarAviso = null;
+    var mostrarAviso = function (txt) {
+      avisoMail.textContent = txt;
+      avisoMail.classList.add('is-on');
+      clearTimeout(ocultarAviso);
+      ocultarAviso = setTimeout(function () { avisoMail.classList.remove('is-on'); }, 4000);
+    };
+
+    mail.addEventListener('click', function () {
+      var dir = mail.getAttribute('href').replace(/^mailto:/, '').split('?')[0];
+      var listo = function (ok) {
+        mostrarAviso(ok ? 'Mail copiado: ' + dir : 'Escribinos a ' + dir);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(dir).then(function () { listo(true); })
+                                          .catch(function () { listo(copiarViejo(dir)); });
+      } else {
+        listo(copiarViejo(dir));
+      }
+    });
+  }
+
   /* ---------- videos ----------
      1) Un solo video corriendo a la vez.
      2) El que entra en pantalla arranca SOLO y EN SILENCIO. En un carrusel el

@@ -546,7 +546,15 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
 .booking{ text-align:center; border-top:1px solid var(--line-soft); background:linear-gradient(to bottom, var(--bg), #0b0b0e); }
 .booking .h2{ margin-bottom:22px; }
 .booking__sub{ color:var(--muted); font-size:clamp(15px,1.5vw,18px); max-width:44ch; margin:0 auto 42px; }
-.booking__acts{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:54px; }
+.booking__acts{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:54px; position:relative; }
+/* aviso de "mail copiado": va absoluto dentro del margen que ya existe abajo,
+   asi aparece y desaparece sin mover nada de la pagina */
+.booking__copied{
+  position:absolute; left:0; right:0; top:100%; margin-top:14px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); opacity:0; transition:opacity .3s var(--ease); pointer-events:none;
+}
+.booking__copied.is-on{ opacity:1; }
 .social{ display:flex; gap:28px; justify-content:center; flex-wrap:wrap; }
 .social a{
   font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
