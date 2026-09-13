@@ -32,6 +32,7 @@
   --line-soft: rgba(244,241,236,.07);
   --accent:      #ff3b2f;
   --accent-ink:  #0a0a0c;   /* texto sobre el acento: 5.6:1 */
+  --ok:          #4ade80;   /* color de ESTADO (confirmacion), no un 2do acento: 11.5:1 */
 
   --wrap: 1240px;
   --pad: clamp(20px, 5vw, 64px);
@@ -552,7 +553,7 @@ html.intro-on .nav__mark img{ animation:navReveal .5s var(--ease) 1.9s both; }
 .booking__copied{
   position:absolute; left:0; right:0; top:100%; margin-top:14px;
   font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--accent); opacity:0; transition:opacity .3s var(--ease); pointer-events:none;
+  color:var(--ok); opacity:0; transition:opacity .3s var(--ease); pointer-events:none;
 }
 .booking__copied.is-on{ opacity:1; }
 .social{ display:flex; gap:28px; justify-content:center; flex-wrap:wrap; }
