@@ -46,6 +46,53 @@ Para cambiar cuánto dura, tocá `2.5s` en la animación `introVeil` de
 
 ---
 
+## Seguir desde otra computadora
+
+Todo el sitio vive en GitHub, así que para trabajar desde otra máquina alcanza con:
+
+```bash
+git clone https://github.com/paoloMaffei-arg/paolo-maffei-site.git
+```
+
+Eso te baja **todo lo que la página necesita** para funcionar: el HTML, los
+estilos, las fotos ya optimizadas, los videos comprimidos y las tipografías.
+No hace falta instalar nada.
+
+Para publicar un cambio desde cualquier PC:
+
+```bash
+git add -A
+git commit -m "lo que cambiaste"
+git push
+```
+
+Vercel lo publica solo en https://paolomaffei.vercel.app
+
+> La primera vez en una máquina nueva, Git te va a pedir tu usuario de GitHub.
+
+### Lo que NO está en GitHub (y conviene guardar en Drive)
+
+La carpeta **`Fotos y videos DJ`** con los originales sin comprimir: son 594 MB
+y 34 archivos. No están acá porque GitHub no es para archivos pesados.
+
+No hacen falta para que la web funcione, **pero sí** si algún día querés:
+
+- rehacer un recorte de una foto,
+- recomprimir un video con otra calidad,
+- o sumar material nuevo a la página.
+
+Subilos a Google Drive en una carpeta llamada `Paolo Maffei - originales`.
+Si se pierden, no se pueden recuperar: las versiones que están en la web ya
+están comprimidas y achicadas.
+
+### Contexto del proyecto
+
+Leé [DECISIONES.md](DECISIONES.md): ahí está el *por qué* de cada decisión de
+diseño, qué se probó y se descartó, y los detalles técnicos que cuesta
+redescubrir. Si retomás esto con otro asistente, pasale ese archivo primero.
+
+---
+
 ## Ver el sitio en tu compu
 
 ```bash
@@ -59,22 +106,44 @@ Después abrí `http://localhost:5173` en el navegador.
 
 ---
 
-## Publicarlo (gratis)
+## Cómo se publica
 
-**Netlify Drop** es lo más rápido y no pide tarjeta:
+El sitio ya está publicado en **https://paolomaffei.vercel.app**
 
-1. Entrá a <https://app.netlify.com/drop>
-2. Arrastrá la carpeta `paolo-maffei-site` entera a la ventana.
-3. En 20 segundos te da una URL tipo `algo-random.netlify.app`.
-4. En *Site settings → Change site name* la cambiás a `paolomaffei.netlify.app`.
+Funciona así: el repositorio de GitHub está conectado a Vercel, y **cada `git push`
+a la rama `main` publica automáticamente**. No hay que hacer nada más, ni instalar
+Vercel, ni arrastrar carpetas.
 
-Cuando tengas dominio propio (`paolomaffei.com`, `paolomaffei.com.ar`), lo
-conectás desde *Domain settings → Add custom domain*. El certificado HTTPS
-lo genera Netlify solo.
+```bash
+git push
+```
 
-Para actualizar el sitio: volvés a arrastrar la carpeta.
+En un minuto el cambio está online.
 
-Alternativas equivalentes: [Vercel](https://vercel.com), [Cloudflare Pages](https://pages.cloudflare.com), GitHub Pages.
+### Probar algo sin publicarlo
+
+Si querés ver un cambio antes de que lo vea todo el mundo, subilo a una rama
+aparte en vez de a `main`:
+
+```bash
+git checkout -b prueba-de-algo
+git push -u origin prueba-de-algo
+```
+
+Vercel genera una dirección de prueba aparte (la ves en el panel de Vercel, en
+*Deployments*). Tu sitio público no se toca. Cuando te convence:
+
+```bash
+git checkout main
+git merge prueba-de-algo
+git push
+```
+
+### Dominio propio
+
+Hoy usa el subdominio gratuito de Vercel. Un dominio propio (`paolomaffei.com`
+o `.com.ar`) se paga por año y se conecta desde *Settings → Domains*; el
+certificado HTTPS lo genera Vercel solo.
 
 ---
 
