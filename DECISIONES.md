@@ -75,5 +75,6 @@ de nombres.
 que mandó Paolo, y hacen falta si alguna vez hay que rehacer un recorte o
 recomprimir un video con otra calidad.
 
-Están (o deberían estar) en Google Drive. Ver el README, sección
-"Seguir desde otra computadora".
+Están respaldados en el Google Drive de Paolo (polomaffei@gmail.com), en la
+carpeta `Paolo Maffei - originales`, con un `INDICE.md` adentro que mapea cada
+original con lo que terminó siendo en la web.

@@ -81,7 +81,10 @@ No hacen falta para que la web funcione, **pero sí** si algún día querés:
 - recomprimir un video con otra calidad,
 - o sumar material nuevo a la página.
 
-Subilos a Google Drive en una carpeta llamada `Paolo Maffei - originales`.
+**Ya están respaldados en Google Drive**, en la cuenta de Paolo
+(polomaffei@gmail.com), carpeta `Paolo Maffei - originales`. Adentro hay un
+`INDICE.md` que dice en qué se convirtió cada archivo.
+
 Si se pierden, no se pueden recuperar: las versiones que están en la web ya
 están comprimidas y achicadas.
 
