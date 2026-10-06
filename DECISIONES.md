@@ -62,6 +62,11 @@ de nombres.
 - **Videos oscuros:** varios clips nocturnos miden 12-15 de brillo sobre 255 y
   quedan negros al comprimir. Corregir con `eq=gamma=1.20` como mucho; no lavar.
   Paolo pidió brillo natural, NO un grade fuerte.
+- **FOTOS oscuras: NO tocarles el brillo.** Distinto que los videos. Las fotos de
+  club (`cruza-*`) miden 20-29 de brillo sobre 255 y así están bien: la luz cae
+  sobre el sujeto y el resto es negro, que es el clima del lugar. Se probó
+  levantarlas y Paolo lo rechazó: "es demasiado clara y pierde el sentido la
+  imagen". Regla: en fotos de club, respetar el original.
 - **Los videos arrancan solos y en silencio** al entrar en pantalla (en un
   carrusel, el primero). Eso hace que se descarguen al scrollear: son ~31 MB en
   total. Si alguna vez pesa demasiado en datos móviles, se puede revertir
